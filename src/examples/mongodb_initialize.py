@@ -3,8 +3,11 @@ import random
 from datetime import datetime, timedelta
 import faker
 
-def init_test_mongodb(uri="mongodb://localhost:27017/"):
-    client = MongoClient(uri)
+def init_test_mongodb(uri="your_atlas_connection_string"):
+    # Create client with SSL settings
+    client = MongoClient(uri, 
+                        tls=True,
+                        tlsAllowInvalidCertificates=True)
     db = client["test_db"]
 
     # Clear existing data

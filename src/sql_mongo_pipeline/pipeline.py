@@ -1,14 +1,22 @@
 import sqlglot
 from sqlglot.expressions import Join, Group, Order, Limit, Select, CTE, Where
-from utils import parse_condition, parse_aggregate_function
+from .utils import parse_condition, parse_aggregate_function
 from datetime import datetime
+from typing import Dict, Any
 
-def create_temp_collection_name(cte_name):
-    """Create a unique temporary collection name for CTE results"""
+def create_temp_collection_name(cte_name: str) -> str:
+    """Create a unique temporary collection name for CTE results."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"temp_{cte_name}_{timestamp}"
 
-def sql_to_mongo_pipeline(sql: str) -> dict:
+def sql_to_mongo_pipeline(sql: str) -> Dict[str, Any]:
+    """
+    Convert a SQL query string to a MongoDB aggregation pipeline.
+    Args:
+        sql: The SQL query string.
+    Returns:
+        A dictionary with the collection, pipeline, and CTE collections if any.
+    """
     ast = sqlglot.parse_one(sql)
     
     # Handle CTEs
@@ -114,8 +122,15 @@ def sql_to_mongo_pipeline(sql: str) -> dict:
         "cte_collections": cte_collections
     }
 
-def execute_mongo_query(db, query_result):
-    """Execute the MongoDB query with CTE support using temporary collections"""
+def execute_mongo_query(db, query_result: Dict[str, Any]) -> Any:
+    """
+    Execute the MongoDB query with CTE support using temporary collections.
+    Args:
+        db: The MongoDB database object.
+        query_result: The result from sql_to_mongo_pipeline.
+    Returns:
+        The query results as a list.
+    """
     try:
         # First execute all CTEs and store results in temporary collections
         if "cte_collections" in query_result:

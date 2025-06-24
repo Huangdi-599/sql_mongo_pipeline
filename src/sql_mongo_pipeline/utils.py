@@ -3,6 +3,7 @@ import sqlglot
 from sqlglot.expressions import Condition, Column, Literal, Expression
 
 def parse_literal(expr: Expression) -> Any:
+    """Parse a SQL literal expression to a Python value."""
     if isinstance(expr, Literal):
         val = expr.this
         if expr.is_string:
@@ -15,7 +16,15 @@ def parse_literal(expr: Expression) -> Any:
             except ValueError:
                 return val
     return str(expr)
+
 def parse_condition(expr: Expression) -> Dict[str, Any]:
+    """
+    Recursively parse a SQL condition expression into a MongoDB match dictionary.
+    Args:
+        expr: The SQLGlot expression.
+    Returns:
+        A MongoDB match dictionary.
+    """
     if expr is None:
         return {}
 
@@ -50,6 +59,13 @@ def parse_condition(expr: Expression) -> Dict[str, Any]:
 
 
 def parse_aggregate_function(expr: Expression) -> Union[Dict[str, Any], None]:
+    """
+    Parse an aggregate function expression into a MongoDB accumulator.
+    Args:
+        expr: The SQLGlot expression.
+    Returns:
+        A MongoDB accumulator dictionary or None if not an aggregate.
+    """
     func_name = expr.name.upper()
     col_expr = expr.args.get("this")
     col = col_expr.name if isinstance(col_expr, Column) else None
