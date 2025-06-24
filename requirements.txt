@@ -1,5 +1,5 @@
-dnspython==2.7.0
-Faker==37.3.0
 pymongo==4.13.0
 sqlglot==26.26.0
-tzdata==2025.2
+Faker==37.3.0
+pytest
+mongomock
