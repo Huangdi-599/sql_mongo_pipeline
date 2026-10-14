@@ -3,3 +3,7 @@ sqlglot==26.26.0
 Faker==37.3.0
 pytest
 mongomock
+pytest-cov
+flake8
+black
+isort
